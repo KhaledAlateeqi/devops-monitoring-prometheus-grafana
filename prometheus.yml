@@ -1,0 +1,26 @@
+# Prometheus main configuration file
+global:
+  scrape_interval: 15s       # How frequently to scrape targets by default
+  evaluation_interval: 15s   # How frequently to evaluate alerting rules
+
+rule_files:
+  - "alert.rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []   # Add an Alertmanager instance here, e.g. ["alertmanager:9093"]
+
+scrape_configs:
+  # Prometheus scraping its own metrics
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Node Exporter — host-level metrics (CPU, memory, disk, network)
+  - job_name: "node_exporter"
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["node_exporter:9100"]
+        labels:
+          instance: "monitoring-host"
